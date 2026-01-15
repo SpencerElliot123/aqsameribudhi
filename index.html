@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>aqsameribudhi 💕</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    background: linear-gradient(#fff0f5, #ffe6ef);
+    margin: 0;
+    padding: 16px;
+    text-align: center;
+  }
+
+  h1 {
+    color: #d63384;
+    font-size: 28px;
+  }
+
+  .today {
+    background: white;
+    border-radius: 18px;
+    padding: 18px;
+    margin: 20px 0;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+
+  .today h2 {
+    color: #d63384;
+    margin-bottom: 12px;
+  }
+
+  .section {
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .section h3 {
+    margin: 6px 0;
+    color: #555;
+  }
+
+  textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 12px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    resize: none;
+  }
+
+  .save-btn {
+    margin-top: 8px;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 25px;
+    background: #d63384;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .days {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .day {
+    background: white;
+    padding: 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  #editor {
+    display: none;
+    margin-top: 20px;
+  }
+</style>
+</head>
+
+<body>
+
+<h1>aqsameribudhi 💖</h1>
+<p>riphah walon ki aesi ki tesi</p>
+
+<!-- TODAY -->
+<div class="today">
+  <h2 id="todayTitle"></h2>
+
+  <div class="section">
+    <h3>💙 My Thoughts</h3>
+    <textarea id="myToday" placeholder="Write your thoughts..."></textarea>
+    <button class="save-btn" onclick="saveToday('my')">Save My Thoughts</button>
+  </div>
+
+  <div class="section">
+    <h3>💖 My Food Panda Thoughts</h3>
+    <textarea id="herToday" placeholder="Write your Food Panda thoughts..."></textarea>
+    <button class="save-btn" onclick="saveToday('her')">Save My Food Panda Thoughts</button>
+  </div>
+</div>
+
+<!-- DAYS 1–15 -->
+<div class="days" id="days"></div>
+
+<div id="editor">
+  <h2 id="dayTitle"></h2>
+
+  <div class="section">
+    <h3>💙 My Thoughts</h3>
+    <textarea id="myBox"></textarea>
+  </div>
+
+  <div class="section">
+    <h3>💖 My Food Panda Thoughts</h3>
+    <textarea id="herBox"></textarea>
+  </div>
+
+  <button class="save-btn" onclick="saveClose()">Save</button>
+</div>
+
+<script>
+  // 🔴 SET DAY 1 DATE
+  const startDate = new Date("2026-01-01"); // change if needed
+
+  const today = new Date();
+  const diffDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+  const todayTitle = document.getElementById("todayTitle");
+  todayTitle.innerText = "Day " + diffDays + " — Today 💭";
+
+  const myToday = document.getElementById("myToday");
+  const herToday = document.getElementById("herToday");
+
+  myToday.value = localStorage.getItem("day" + diffDays + "_my") || "";
+  herToday.value = localStorage.getItem("day" + diffDays + "_her") || "";
+
+  function saveToday(who) {
+    const key = "day" + diffDays + "_" + who;
+    const value = who === "my" ? myToday.value : herToday.value;
+    localStorage.setItem(key, value);
+    alert("Saved ❤️");
+  }
+
+  // PRESET DAYS 1–13 (MY THOUGHTS)
+  const preset = {
+    day1_my: "Day 1: Everything feels different without you.",
+    day2_my: "Day 2: I keep checking my phone, hoping it’s you.",
+    day3_my: "Day 3: Distance hurts, but love stays strong.",
+    day4_my: "Day 4: Missing you became part of my routine.",
+    day5_my: "Day 5: Even busy days end with your thoughts.",
+    day6_my: "Day 6: I smiled today because of a memory.",
+    day7_my: "Day 7: One week apart, still us.",
+    day8_my: "Day 8: Loving you feels calm and heavy together.",
+    day9_my: "Day 9: Random thought — your laugh is my favorite sound.",
+    day10_my: "Day 10: Some days feel long without you.",
+    day11_my: "Day 11: I’m learning patience because of you.",
+    day12_my: "Day 12: Missing you comes in waves.",
+    day13_my: "Day 13: Almost there, holding hope."
+  };
+
+  const daysDiv = document.getElementById("days");
+  const editor = document.getElementById("editor");
+  const myBox = document.getElementById("myBox");
+  const herBox = document.getElementById("herBox");
+  const dayTitle = document.getElementById("dayTitle");
+  let currentDay = "";
+
+  for (let i = 1; i <= 15; i++) {
+    const d = document.createElement("div");
+    d.className = "day";
+    d.innerText = "Day " + i;
+    d.onclick = () => openDay(i);
+    daysDiv.appendChild(d);
+
+    if (preset["day" + i + "_my"] && !localStorage.getItem("day" + i + "_my")) {
+      localStorage.setItem("day" + i + "_my", preset["day" + i + "_my"]);
+    }
+  }
+
+  function openDay(num) {
+    currentDay = num;
+    dayTitle.innerText = "Day " + num;
+    myBox.value = localStorage.getItem("day" + num + "_my") || "";
+    herBox.value = localStorage.getItem("day" + num + "_her") || "";
+    editor.style.display = "block";
+  }
+
+  function saveClose() {
+    localStorage.setItem("day" + currentDay + "_my", myBox.value);
+    localStorage.setItem("day" + currentDay + "_her", herBox.value);
+    editor.style.display = "none";
+  }
+</script>
+
+</body>
+</html>
